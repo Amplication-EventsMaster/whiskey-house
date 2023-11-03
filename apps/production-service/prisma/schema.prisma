@@ -1,0 +1,27 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Process {
+  createdAt   DateTime  @default(now())
+  description String?
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  machines    Machine[]
+  meta        Json?
+  name        String?
+  updatedAt   DateTime  @updatedAt
+}
+
+model Machine {
+  createdAt DateTime @default(now())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String?
+  process   Process? @relation(fields: [processId], references: [id])
+  processId String?  @db.ObjectId
+  updatedAt DateTime @updatedAt
+}
